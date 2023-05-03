@@ -75,18 +75,26 @@ if (lux > 400) {
       }
 
       // Publish light sensor data to MQTT broker
-      if (!isnan(lux) && lux > 400) {
-        char buffer[10];
-      snprintf(buffer, 10, "%d", lux);
-      client.publish(mqtt_publisher_topic, ("The light sensor reading is " + String(buffer) + " lux").c_str());
-    } else {
-      Serial.println("Kotak isn't opened! Thank god :)"); //if the light level is a number, print an error message
-      //digitalWrite(LED_PIN, LOW); // Turn off LED
-    }
-    lastLightTime = millis(); //this is to make the light level read every 2 seconds
+      if (!isnan(lux)) {
+  Serial.print("Light sensor is: ");
+  Serial.print(lux);
+  Serial.println(" lux");
+  if (lux > 400) {
+    digitalWrite(LED_PIN, HIGH);
+    char buffer[10];
+    snprintf(buffer, 10, "%d", lux);
+    client.publish(mqtt_publisher_topic, ("Warning, 2501966742 " + String(buffer) + " lux").c_str());
+  } if (lux < 400)
+  {
+    digitalWrite(LED_PIN, LOW);
+    char buffer[10];
+    snprintf(buffer, 10, "%d", lux);
+    client.publish(mqtt_publisher_topic, ("Closed, 2501966742 " + String(buffer) + " lux").c_str());
   }
+ 
 }
-
+}
+  }
   /*  char buffer[10];
       snprintf(buffer, 10, "%d", lux);
       client.publish(mqtt_publisher_topic, ("The light sensor reading is " + String(buffer) + " lux").c_str());
